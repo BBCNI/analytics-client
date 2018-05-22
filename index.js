@@ -5,10 +5,12 @@ const axios = require('axios');
 const client = new window.ClientJS();
 
 const init = (options) => {
+  window.clearInterval(this.heartbeatInterval);
+  window.clearTimeout(this.heartbeatTimeout);
   this.projectName = options.projectName;
   this.secondaryProject = options.secondaryProject || options.pageName || options.projectName;
   this.sentEvents = {};
-  axios.post(`${constants.ANALYTICS_URL}/events`, {
+  axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(options, {
     projectName: this.projectName,
     secondaryProject: this.secondaryProject,
     eventType: 'view',
@@ -18,12 +20,12 @@ const init = (options) => {
     fingerprint: client.getFingerprint(),
     referrer: document.referrer,
     version: 1
-  });
+  }));
 
   this.heartbeatCount = 0;
-  window.setTimeout(() => {
+  this.heartbeatTimeout = window.setTimeout(() => {
     this.heartbeat();
-    window.setInterval(() => {
+    this.heartbeatInterval = window.setInterval(() => {
       this.heartbeat();
     }, 30000);
   }, 30000);
