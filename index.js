@@ -6,7 +6,7 @@ const client = new window.ClientJS();
 
 const init = (options) => {
   this.projectName = options.projectName;
-  this.secondaryProject = options.secondaryProject || options.projectName;
+  this.secondaryProject = options.secondaryProject || options.pageName || options.projectName;
   this.sentEvents = {};
   axios.post(`${constants.ANALYTICS_URL}/events`, {
     projectName: this.projectName,
