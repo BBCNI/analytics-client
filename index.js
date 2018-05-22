@@ -39,20 +39,20 @@ const heartbeat = () => {
   });
 };
 
-const count = ({ eventName, unique }) => {
-  if (unique && this.sentEvents[eventName]) {
+const count = (data) => {
+  if (data.unique && this.sentEvents[data.eventName]) {
     return;
   }
 
-  this.sentEvents[eventName] = true;
+  this.sentEvents[data.eventName] = true;
 
-  axios.post(`${constats.ANALYTICS_URL}/events`, {
+  axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(data, {
     projectName: this.projectName,
     secondaryProject: this.secondaryProject,
     eventType: 'count',
-    eventName: eventName
-  }).catch(() => {
-    this.sentEvents[eventName] = false;
+    eventName: data.eventName
+  })).catch(() => {
+    this.sentEvents[data.eventName] = false;
   });
 };
 
