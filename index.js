@@ -26,9 +26,9 @@ const init = (options) => {
 
   settings.heartbeatCount = 0;
   settings.heartbeatTimeout = window.setTimeout(() => {
-    settings.heartbeat();
+    heartbeat();
     settings.heartbeatInterval = window.setInterval(() => {
-      settings.heartbeat();
+      heartbeat();
     }, 30000);
   }, 30000);
 };
