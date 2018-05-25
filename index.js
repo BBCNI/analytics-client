@@ -4,15 +4,17 @@ const axios = require('axios');
 
 const client = new window.ClientJS();
 
+const settings = {};
+
 const init = (options) => {
-  window.clearInterval(this.heartbeatInterval);
-  window.clearTimeout(this.heartbeatTimeout);
-  this.projectName = options.projectName;
-  this.secondaryProject = options.secondaryProject || options.pageName || options.projectName;
-  this.sentEvents = {};
+  window.clearInterval(settings.heartbeatInterval);
+  window.clearTimeout(settings.heartbeatTimeout);
+  settings.projectName = options.projectName;
+  settings.secondaryProject = options.secondaryProject || options.pageName || options.projectName;
+  settings.sentEvents = {};
   axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(options, {
-    projectName: this.projectName,
-    secondaryProject: this.secondaryProject,
+    projectName: settings.projectName,
+    secondaryProject: settings.secondaryProject,
     eventType: 'view',
     browser: client.getBrowserData(),
     screen: client.getScreenPrint(),
@@ -22,47 +24,41 @@ const init = (options) => {
     version: 1
   }));
 
-  this.heartbeatCount = 0;
-  this.heartbeatTimeout = window.setTimeout(() => {
-    this.heartbeat();
-    this.heartbeatInterval = window.setInterval(() => {
-      this.heartbeat();
+  settings.heartbeatCount = 0;
+  settings.heartbeatTimeout = window.setTimeout(() => {
+    settings.heartbeat();
+    settings.heartbeatInterval = window.setInterval(() => {
+      settings.heartbeat();
     }, 30000);
   }, 30000);
 };
 
 const heartbeat = () => {
   axios.post(`${constants.ANALYTICS_URL}/events`, {
-    projectName: this.projectName,
-    secondaryProject: this.secondaryProject,
+    projectName: settings.projectName,
+    secondaryProject: settings.secondaryProject,
     eventType: 'heartbeat',
-    iteration: this.heartbeatCount += 1,
+    iteration: settings.heartbeatCount += 1,
     version: 1
   });
 };
 
 const count = (data) => {
-  if (data.unique && this.sentEvents[data.eventName]) {
+  if (data.unique && settings.sentEvents[data.eventName]) {
     return;
   }
 
-  this.sentEvents[data.eventName] = true;
+  settings.sentEvents[data.eventName] = true;
 
   axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(data, {
-    projectName: this.projectName,
-    secondaryProject: this.secondaryProject,
+    projectName: settings.projectName,
+    secondaryProject: settings.secondaryProject,
     eventType: 'count',
     eventName: data.eventName
   })).catch(() => {
-    this.sentEvents[data.eventName] = false;
+  })).catch(() => {
+    settings.sentEvents[data.eventName] = false;
   });
 };
 
-const settings = {};
-
-module = {
-  init: init.bind(settings),
-  count: count.bind(settings),
-};
-
-module.exports = module;
+module.exports = { init, count};
