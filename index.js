@@ -56,7 +56,6 @@ const count = (data) => {
     eventType: 'count',
     eventName: data.eventName
   })).catch(() => {
-  })).catch(() => {
     settings.sentEvents[data.eventName] = false;
   });
 };
