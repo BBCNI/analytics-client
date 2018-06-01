@@ -1,12 +1,12 @@
-const constants = require('./constants');
-const ClientJS = require('clientjs');
-const axios = require('axios');
+var constants = require('./constants');
+var ClientJS = require('clientjs');
+var axios = require('axios');
 
-const client = new window.ClientJS();
+var client = new window.ClientJS();
 
-const settings = {};
+var settings = {};
 
-const init = (options) => {
+function init(options) {
   window.clearInterval(settings.heartbeatInterval);
   window.clearTimeout(settings.heartbeatTimeout);
   settings.projectName = options.projectName;
@@ -25,15 +25,15 @@ const init = (options) => {
   }));
 
   settings.heartbeatCount = 0;
-  settings.heartbeatTimeout = window.setTimeout(() => {
+  settings.heartbeatTimeout = window.setTimeout(function() {
     heartbeat();
-    settings.heartbeatInterval = window.setInterval(() => {
+    settings.heartbeatInterval = window.setInterval(function() {
       heartbeat();
     }, 30000);
   }, 30000);
 };
 
-const heartbeat = () => {
+function heartbeat() {
   axios.post(`${constants.ANALYTICS_URL}/events`, {
     projectName: settings.projectName,
     secondaryProject: settings.secondaryProject,
@@ -43,7 +43,7 @@ const heartbeat = () => {
   });
 };
 
-const count = (data) => {
+function count(data) {
   if (data.unique && settings.sentEvents[data.eventName]) {
     return;
   }
@@ -55,9 +55,9 @@ const count = (data) => {
     secondaryProject: settings.secondaryProject,
     eventType: 'count',
     eventName: data.eventName
-  })).catch(() => {
+  })).catch(function() {
     settings.sentEvents[data.eventName] = false;
   });
 };
 
-module.exports = { init, count};
+module.exports = { init, count };
