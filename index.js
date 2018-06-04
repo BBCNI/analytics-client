@@ -53,7 +53,7 @@ function count(data) {
   axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(data, {
     projectName: settings.projectName,
     secondaryProject: settings.secondaryProject,
-    eventType: 'count',
+    eventType: data.eventType || 'count',
     eventName: data.eventName
   })).catch(function() {
     settings.sentEvents[data.eventName] = false;
