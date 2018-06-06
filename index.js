@@ -12,7 +12,7 @@ function init(options) {
   settings.projectName = options.projectName;
   settings.secondaryProject = options.secondaryProject || options.pageName || options.projectName;
   settings.sentEvents = {};
-  axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(options, {
+  axios.post(constants.ANALYTICS_URL + '/events', Object.assign(options, {
     projectName: settings.projectName,
     secondaryProject: settings.secondaryProject,
     eventType: 'view',
@@ -25,16 +25,16 @@ function init(options) {
   }));
 
   settings.heartbeatCount = 0;
-  settings.heartbeatTimeout = window.setTimeout(function() {
+  settings.heartbeatTimeout = window.setTimeout(function () {
     heartbeat();
-    settings.heartbeatInterval = window.setInterval(function() {
+    settings.heartbeatInterval = window.setInterval(function () {
       heartbeat();
     }, 30000);
   }, 30000);
 };
 
 function heartbeat() {
-  axios.post(`${constants.ANALYTICS_URL}/events`, {
+  axios.post(constants.ANALYTICS_URL + '/events', {
     projectName: settings.projectName,
     secondaryProject: settings.secondaryProject,
     eventType: 'heartbeat',
@@ -50,12 +50,12 @@ function count(data) {
 
   settings.sentEvents[data.eventName] = true;
 
-  axios.post(`${constants.ANALYTICS_URL}/events`, Object.assign(data, {
+  axios.post(constants.ANALYTICS_URL + '/events', Object.assign(data, {
     projectName: settings.projectName,
     secondaryProject: settings.secondaryProject,
     eventType: data.eventType || 'count',
     eventName: data.eventName
-  })).catch(function() {
+  })).catch(function () {
     settings.sentEvents[data.eventName] = false;
   });
 };
