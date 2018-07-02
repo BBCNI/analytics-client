@@ -44,11 +44,11 @@ function heartbeat() {
 };
 
 function count(data) {
-  if (data.unique && settings.sentEvents[data.eventName]) {
+  if (data.unique && settings.sentEvents[data.uniqueKey || data.eventName]) {
     return;
   }
 
-  settings.sentEvents[data.eventName] = true;
+  settings.sentEvents[data.uniqueKey || data.eventName] = true;
 
   axios.post(constants.ANALYTICS_URL + '/events', Object.assign(data, {
     projectName: settings.projectName,
@@ -56,7 +56,7 @@ function count(data) {
     eventType: data.eventType || 'count',
     eventName: data.eventName
   })).catch(function () {
-    settings.sentEvents[data.eventName] = false;
+    settings.sentEvents[data.uniqueKey || data.eventName] = false;
   });
 };
 
