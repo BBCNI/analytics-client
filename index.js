@@ -33,6 +33,15 @@ function init(options) {
   }, 30000);
 };
 
+function error(data) {
+  axios.post(constants.ANALYTICS_URL + '/events', Object.assign(data, {
+    projectName: settings.projectName,
+    secondaryProject: data.secondaryProject || settings.secondaryProject,
+    eventType: 'error',
+    version: 1
+  }));
+};
+
 function heartbeat() {
   axios.post(constants.ANALYTICS_URL + '/events', {
     projectName: settings.projectName,
@@ -60,4 +69,4 @@ function count(data) {
   });
 };
 
-module.exports = { init, count };
+module.exports = { init: init, count: count, error: error };
