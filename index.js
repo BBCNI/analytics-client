@@ -38,7 +38,8 @@ function error(data) {
     projectName: settings.projectName,
     secondaryProject: data.secondaryProject || settings.secondaryProject,
     eventType: 'error',
-    version: 1
+    version: 1,
+    browser: client.getBrowserData(),
   }));
 };
 
