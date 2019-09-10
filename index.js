@@ -6,7 +6,14 @@ var client = new window.ClientJS();
 
 var settings = {};
 
+function isPrivateEnv() {
+  return window.location.host.includes('private');
+}
+
 function init(options) {
+  // Don't post events if the site is 'private'
+  if (isPrivateEnv()) return false;
+
   window.clearInterval(settings.heartbeatInterval);
   window.clearTimeout(settings.heartbeatTimeout);
   settings.projectName = options.projectName;
@@ -34,6 +41,9 @@ function init(options) {
 };
 
 function error(data) {
+  // Don't post events if the site is 'private'
+  if (isPrivateEnv()) return false;
+
   axios.post(constants.ANALYTICS_URL + '/events', Object.assign(data, {
     projectName: settings.projectName,
     secondaryProject: data.secondaryProject || settings.secondaryProject,
@@ -44,6 +54,9 @@ function error(data) {
 };
 
 function heartbeat() {
+  // Don't post events if the site is 'private'
+  if (isPrivateEnv()) return false;
+
   axios.post(constants.ANALYTICS_URL + '/events', {
     projectName: settings.projectName,
     secondaryProject: settings.secondaryProject,
@@ -54,6 +67,9 @@ function heartbeat() {
 };
 
 function count(data) {
+  // Don't post events if the site is 'private'
+  if (isPrivateEnv()) return false;
+
   if (data.unique && settings.sentEvents[data.uniqueKey || data.eventName]) {
     return;
   }
